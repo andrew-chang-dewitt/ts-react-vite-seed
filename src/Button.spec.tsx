@@ -1,28 +1,30 @@
 import { useState } from "react";
 import { render, screen } from "@testing-library/react";
-// import { userEvent } from "@testing-library/user-event";
+import { userEvent } from "@testing-library/user-event";
 import { describe, expect, test } from "vitest";
 
 import { Button } from "$/Button";
 
 describe("button component", () => {
-  function setup(initialState: number): HTMLButtonElement {
-    function Test() {
-      let [count, setCount] = useState(initialState);
+  type TestProps = { initialState: number };
 
-      return (
-        <Button count={count} onClick={() => setCount((count) => count + 1)} />
-      );
-    }
+  function Test({ initialState }: TestProps) {
+    let [count, setCount] = useState(initialState);
 
-    render(<Test />);
-
-    // await userEvent.click(screen.getByRole("button"));
-    return screen.getByRole("button");
+    return (
+      <Button count={count} onClick={() => setCount((count) => count + 1)} />
+    );
   }
 
-  test("starts with given initial count", async () => {
-    const button = setup(0);
-    expect(button).toHaveTextContent("count is 0");
+  test("keeps the correct count", async () => {
+    render(<Test initialState={0} />);
+
+    expect(screen.getByRole("button")).toHaveTextContent("count is 0");
+
+    for (let i = 1; i < 100; i++) {
+      await userEvent.click(screen.getByRole("button"));
+
+      expect(screen.getByRole("button")).toHaveTextContent(`count is ${i}`);
+    }
   });
 });
