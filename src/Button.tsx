@@ -1,6 +1,11 @@
 import styles from "./Button.module.css";
 
-export function Button({ count, onClick }) {
+type ButtonProps = {
+  count: number;
+  onClick: () => void;
+};
+
+export function Button({ count, onClick }: ButtonProps) {
   return (
     <button className={styles.red} onClick={onClick}>
       count is {count}
